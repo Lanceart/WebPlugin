@@ -1,38 +1,37 @@
-let isLogging = false; // Flag to toggle logging
+// chrome.webRequest.onBeforeRequest.addListener(
+//   function(details) {
+//     console.log('URL Requested:', details.url);
+//     // Send message to popup if it's open
+//     chrome.runtime.sendMessage({type: 'urlRequest', url: details.url});
+//   },
+//   { urls: ["<all_urls>"] } // This filters for all URLs. Adjust if needed.
+// );
 
-// Function to handle each request
-const logUrl = details => {
-  console.log("URL:", details.url);
-};
 
-// Toggle the logging of HTTP request URLs
-function toggleLogging() {
-  if (isLogging) {
-    // Stop logging requests
-    chrome.webRequest.onBeforeRequest.removeListener(logUrl);
-    isLogging = false;
-  } else {
-    // Start logging requests
-    chrome.webRequest.onBeforeRequest.addListener(
-      logUrl,
-      { urls: ["<all_urls>"] },
-      ["requestBody"]
-    );
-    isLogging = true;
-  }
-}
+let currentTabId = null;
 
-// Listen for a message from the popup
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.action === "toggleLogging") {
-    toggleLogging();
-    // Send response back to the popup if needed
-    sendResponse({logging: isLogging});
+// Listen for tab activation changes to update the currentTabId
+chrome.tabs.onActivated.addListener(activeInfo => {
+  currentTabId = activeInfo.tabId;
+});
+
+// Use the webRequest API to log requests from the current active tab
+chrome.webRequest.onBeforeRequest.addListener(
+  function(details) {
+    if (currentTabId && details.tabId === currentTabId) {
+      console.log(`URL Requested from active tab (${currentTabId}): ${details.url}, Type: ${details.type}, Initiator: ${details.initiator}`);
+      // If you want to communicate with the popup, you can send a message:
+      // chrome.runtime.sendMessage({tabId: currentTabId, url: details.url});
+    }
+  },
+  { urls: ["<all_urls>"] },
+  ["requestBody"]
+);
+
+// Make sure to update the currentTabId when a tab is updated
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (tab.active && changeInfo.status === 'complete') {
+    currentTabId = tabId;
   }
 });
 
-// Optional: Update the icon to reflect whether logging is active
-function updateIcon() {
-  const path = isLogging ? "icon-on.png" : "icon-off.png";
-  chrome.browserAction.setIcon({ path: path });
-}
