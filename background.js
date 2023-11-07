@@ -19,7 +19,9 @@ chrome.tabs.onActivated.addListener(activeInfo => {
 chrome.webRequest.onBeforeRequest.addListener(
   function(details) {
     if (currentTabId && details.tabId === currentTabId) {
-      console.log(`URL Requested from active tab (${currentTabId}): ${details.url}, Type: ${details.type}, Initiator: ${details.initiator}`);
+      // console.log(details);
+      // !!! important
+      // console.log(`URL Requested from active tab (${currentTabId}): ${details.url}, Type: ${details.type}, Initiator: ${details.initiator}`);
       // If you want to communicate with the popup, you can send a message:
       // chrome.runtime.sendMessage({tabId: currentTabId, url: details.url});
     }
@@ -34,4 +36,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     currentTabId = tabId;
   }
 });
+
+// background.js
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'script-added' || message.type === 'script-loaded') {
+    console.log('Script source:', message.src, 'from page:', message.pageUrl);
+    // Here, you can keep track of the scripts and their relationships
+    // You could, for instance, keep a map of pages to scripts
+  }
+});
+
 
