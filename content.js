@@ -29,32 +29,4 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
   });
-  
 
-//   // content.js
-// (function() {
-//     const originalCreateElement = document.createElement;
-  
-//     document.createElement = function(tagName) {
-//       const element = originalCreateElement.call(document, tagName);
-//       if (tagName.toLowerCase() === 'script') {
-//         const originalSetAttribute = element.setAttribute;
-//         element.setAttribute = function(name, value) {
-//           if (name.toLowerCase() === 'src') {
-//             // 捕获堆栈跟踪
-//             const stack = new Error().stack;
-//             console.log(stack);
-//             // 将堆栈跟踪发送到背景脚本
-//             chrome.runtime.sendMessage({
-//               type: 'script-src-set',
-//               src: value,
-//               stack: stack
-//             });
-//           }
-//           return originalSetAttribute.apply(this, arguments);
-//         };
-//       }
-//       return element;
-//     };
-//   })();
-  

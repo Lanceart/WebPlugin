@@ -1,13 +1,3 @@
-// chrome.webRequest.onBeforeRequest.addListener(
-//   function(details) {
-//     console.log('URL Requested:', details.url);
-//     // Send message to popup if it's open
-//     chrome.runtime.sendMessage({type: 'urlRequest', url: details.url});
-//   },
-//   { urls: ["<all_urls>"] } // This filters for all URLs. Adjust if needed.
-// );
-
-
 let currentTabId = null;
 
 // Listen for tab activation changes to update the currentTabId
@@ -39,7 +29,24 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 // background.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log(message.type);
+  if(message.download === "request") {
+    console.log(message.url);
+    var blob = new Blob([message.url], {type: 'text/plain'});
+
+    var reader = new FileReader();
+        reader.onload = function() {
+            var url = reader.result;
+
+            // 使用chrome.downloads.download下载文本
+            chrome.downloads.download({
+                url: url,
+                filename: 'text.txt' // 您可以自定义下载的文件名
+            });
+        };
+        reader.readAsDataURL(blob);
+    // chrome.downloads.download({url: message.url});
+  }
+  // console.log(message.type);
   if (message.type === 'script-added' || message.type === 'script-loaded') {
     // !!!important
     console.log('Type:', message.type,'Script source:', message.src, 'from page:', message.pageUrl);
@@ -65,5 +72,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
 });
+// chrome.action.onClicked.addListener((tab) => {
+//   // 获取当前标签页的所有HTTP链接
+//   console.log("get the request from button")
+//   chrome.scripting.executeScript({
+//     target: { tabId: tab.id },
+//     function: downloadAllHttpLinks
+//   });
+// });
 
+
+function downloadAllHttpLinks() {
+  let links = Array.from(document.querySelectorAll('a[href^="http://"]')).map(a => a.href);
+  console.log("Processing download");
+  // 发送链接到背景脚本
+  chrome.runtime.sendMessage({action: "downloadLinks", links: links});
+}
 
