@@ -2,10 +2,24 @@
 <html>
 <head>
     <title>Hello World</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://d3js.org">
+    <style>
+        .node { margin-left: 20px; }
+    </style>
+    <script src="extension-page.js"></script>
 </head>
 <body>
     <h1>Hello World!</h1>
     <div id="linksContainer">Loading links...</div>
-    <script src="extension-page.js"></script>
+    <svg id="demo1" width=600 height=300>
+        <g transform="translate(0,10)">
+          <g class="links"></g>
+          <g class="nodes"></g>
+          <g class="labels"></g>
+        </g>
+    </svg>
+    <div id="d3-container-div"></div>
+    <script src="external/d3.v6.min.js"></script>
+    <script src="tree_builder.js"></script>
 </body>
 </html>
