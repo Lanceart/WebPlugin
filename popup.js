@@ -16,6 +16,7 @@
 // );
 document.getElementById('download').addEventListener('click', () => {
   console.log("run the download");
+  
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     chrome.scripting.executeScript({
       target: {tabId: tabs[0].id},
@@ -23,6 +24,17 @@ document.getElementById('download').addEventListener('click', () => {
     });
   });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+  var button = document.getElementById('myButton');
+  if (button) {
+      button.addEventListener('click', function() {
+          chrome.tabs.create({'url': chrome.runtime.getURL('extension-page.html')});
+      });
+  }
+});
+
+
 
 
 

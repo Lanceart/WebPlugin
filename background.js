@@ -29,19 +29,21 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 // background.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if(message.type == 'COLLECT_LINKS'){
+    console.log(message.links);
+  }
   if(message.download === "request") {
     console.log(message.url);
     var blob = new Blob([message.url], {type: 'text/plain'});
-
+    chrome.storage.local.set({name: 'hahaha'});
     var reader = new FileReader();
         reader.onload = function() {
             var url = reader.result;
 
             // 使用chrome.downloads.download下载文本
             chrome.downloads.download({
-                url: url,
-                filename: 'text.txt' // 您可以自定义下载的文件名
-            });
+                url: url
+              });
         };
         reader.readAsDataURL(blob);
     // chrome.downloads.download({url: message.url});
