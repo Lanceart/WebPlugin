@@ -30,6 +30,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 // background.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if(message.type == 'COLLECT_LINKS'){
+    chrome.storage.local.set({ 'collections': message.links }, () => {
+      console.log('Links stored in chrome.storage.local');
+    });
     console.log(message.links);
   }
   if(message.download === "request") {
