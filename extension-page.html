@@ -5,6 +5,19 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://d3js.org">
     <style>
         .node { margin-left: 20px; }
+    
+        
+        /* 添加 CSS 样式以在表格中显示分割线 */
+        table {
+            border-collapse: collapse; /* 确保边框没有间隔 */
+            width: 100%; /* 表格宽度 */
+        }
+        th, td {
+            border: 1px solid black; /* 单元格边框 */
+            padding: 8px; /* 单元格内边距 */
+            text-align: left; /* 文本对齐方式 */
+        }
+    
     </style>
     <script src="extension-page.js"></script>
 </head>
@@ -19,7 +32,10 @@
         </g>
     </svg>
     <div id="d3-container-div"></div>
+    <div id="table-container"></div>
+
     <script src="external/d3.v6.min.js"></script>
     <script src="tree_builder.js"></script>
+    <script src="script/format.js"></script>
 </body>
 </html>
