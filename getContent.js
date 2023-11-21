@@ -9,7 +9,7 @@ async function fetchScriptContent(url) {
 }
 
 function findScriptUrlsInContent(content) {
-    const scriptUrlRegex = /(?:import .* from|require\()["'](.+?)["']/g;
+    const scriptUrlRegex = /import.*?from\s*["'](.+?)["']/g;
     let match;
     const urls = [];
 
