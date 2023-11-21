@@ -29,6 +29,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 // background.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if(message.type == 'FETCHING_LINKS'){
+    console.log("Fetched", message.log);
+  }
   if(message.type == 'COLLECT_LINKS'){
     chrome.storage.local.set({ 'collections': message.links }, () => {
       console.log('Links stored in chrome.storage.local');
@@ -38,7 +41,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if(message.download === "request") {
     console.log(message.url);
     var blob = new Blob([message.url], {type: 'text/plain'});
-    chrome.storage.local.set({name: 'hahaha'});
+    // chrome.storage.local.set({name: 'hahaha'});
     var reader = new FileReader();
         reader.onload = function() {
             var url = reader.result;
@@ -77,14 +80,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
 });
-// chrome.action.onClicked.addListener((tab) => {
-//   // 获取当前标签页的所有HTTP链接
-//   console.log("get the request from button")
-//   chrome.scripting.executeScript({
-//     target: { tabId: tab.id },
-//     function: downloadAllHttpLinks
-//   });
-// });
 
 
 function downloadAllHttpLinks() {
