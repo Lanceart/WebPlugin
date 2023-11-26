@@ -31,7 +31,8 @@ async function fetchAndAnalyzeScripts(scriptUrls, depth = 0) {
             const childScriptUrls = findScriptUrlsInContent(content);
             chrome.runtime.sendMessage({
                 type: 'FETCHING_LINKS',
-                log: {url}
+                log: {url},
+                size: new TextEncoder().encode(content).length
             });
             console.log(`Found URLs in ${url}:`, childScriptUrls);
             await fetchAndAnalyzeScripts(childScriptUrls, depth + 1);
@@ -78,7 +79,7 @@ chrome.runtime.sendMessage({
     links: collectSrcs()
 });
 
-chrome.runtime.sendMessage({download: "request", url: document.documentElement.outerHTML});
+// chrome.runtime.sendMessage({download: "request", url: document.documentElement.outerHTML});
 
 // document.querySelectorAll('img').forEach(img => {
     

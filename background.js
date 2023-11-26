@@ -11,7 +11,8 @@ chrome.webRequest.onBeforeRequest.addListener(
     if (currentTabId && details.tabId === currentTabId) {
       // console.log(details);
       // !!! important
-      console.log(`URL Requested from active tab (${currentTabId}): ${details.url}, Type: ${details.type}, Initiator: ${details.initiator}`);
+      
+      console.log(`URL Requested from active tab (${currentTabId}): ${details.url}, Type: ${details.type}, Initiator: ${details.initiator}. full ${JSON.stringify(details)}`);
       // If you want to communicate with the popup, you can send a message:
       // chrome.runtime.sendMessage({tabId: currentTabId, url: details.url});
     }
@@ -30,7 +31,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 // background.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if(message.type == 'FETCHING_LINKS'){
-    console.log("Fetched", message.log);
+    console.log("Fetched", message.log, "and the size :", message.size);
   }
   if(message.type == 'COLLECT_LINKS'){
     chrome.storage.local.set({ 'collections': message.links }, () => {
