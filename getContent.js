@@ -32,6 +32,7 @@ async function fetchAndAnalyzeScripts(scriptUrls, depth = 0) {
             chrome.runtime.sendMessage({
                 type: 'FETCHING_LINKS',
                 log: {url},
+                child: childScriptUrls,
                 size: new TextEncoder().encode(content).length
             });
             console.log(`Found URLs in ${url}:`, childScriptUrls);
@@ -78,6 +79,7 @@ chrome.runtime.sendMessage({
     url: window.location.href,
     links: collectSrcs()
 });
+
 
 // chrome.runtime.sendMessage({download: "request", url: document.documentElement.outerHTML});
 

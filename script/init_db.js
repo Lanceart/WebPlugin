@@ -1,4 +1,4 @@
-export function openDB(dbName, version = 1){
+function openDB(dbName, version = 1){
     return new Promise((resolve, reject) => {
       //  兼容浏览器
       var indexedDB =
@@ -39,3 +39,5 @@ export function openDB(dbName, version = 1){
       };
     });
   };
+
+let db = openDB("hahaha");

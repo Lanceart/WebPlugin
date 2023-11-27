@@ -25,6 +25,17 @@ document.getElementById('download').addEventListener('click', () => {
   });
 });
 
+document.getElementById('saveconsole').addEventListener('click', () => {
+  console.log("run the download");
+  
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.scripting.executeScript({
+      target: {tabId: tabs[0].id},
+      files: ['./script/saveconsole.js']
+    });
+  });
+});
+
 document.addEventListener('DOMContentLoaded', function() {
   var button = document.getElementById('myButton');
   if (button) {
