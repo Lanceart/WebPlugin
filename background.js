@@ -115,6 +115,11 @@ chrome.webRequest.onBeforeRequest.addListener(
 chrome.webRequest.onCompleted.addListener(
   function(details) {
     if (currentTabId && details.tabId === currentTabId) {
+
+
+      const headers = details.responseHeaders;
+      console.log("get all the header", headers);
+      
       const startTime = requestTimes[details.requestId];
       const endTime = Date.now();
       const duration = endTime - startTime;
