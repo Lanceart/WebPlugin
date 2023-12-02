@@ -5,7 +5,7 @@ var treeData = {
             name: "HEAD",
             children: [
                 { name: "TITLE", children: [{ name: "My Page Title" }] },
-                { name: "LINK", children: [{ name: "style.css" }] }
+                { name: "LINK", children: [{name:"TITLE"}, {name:"script.js"}] }
             ]
         },
         { 
