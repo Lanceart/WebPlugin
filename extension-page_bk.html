@@ -38,7 +38,7 @@
     <script src="script/format.js"></script>
     <script>
                
-           var marge = {top:100,bottom:100,left:100,right:100}
+           var marge = {top:60,bottom:60,left:60,right:60}
            var svg = d3.select("#demo1")    //获取画布
            var width = svg.attr("width")  //画布的宽
            var height = svg.attr("height")   //画布的高
@@ -48,10 +48,10 @@
            var nodes=[ {name:"HTML"},
                        {name:"BODY"},
                        {name:"HEAD"},
-                         {name:"popup.css"},
+                         {name:"SCRIPT"},
                          {name:"script.js"},
                         {name:"style.css"},
-                        {name:"extension.css"}
+                        {name:"extension.html"}
            ];
            //边数据，id是nodes数组中的元素下标
            var edges=[ {source:0,target:1},
@@ -69,39 +69,22 @@
            ];
 
            //设置一个color的颜色比例尺，为了让不同的顶点呈现不同的颜色
-           var colorScale = d3.scaleOrdinal()
-               .domain(d3.range(nodes.length))
-               .range(d3.schemeCategory10);
-            
-               // Custom color function based on node name
-            function getNodeColor(nodeName) {
+        //    var colorScale = d3.scaleOrdinal()
+        //        .domain(d3.range(nodes.length))
+        //        .range(d3.schemeCategory10);
+               
+            var colorScale = function(nodeName) {
                 if (nodeName.includes('.js')) {
                     return 'blue'; // Blue color for .js files
                 } else if (nodeName.includes('.css')) {
                     return 'red'; // Red color for .css files
-
-                }else if (nodeName.includes('HTML')) {
-                    return 'green'; // Red color for .css files
                 } else {
                     return 'black'; // Black color for other nodes
                 }
-            }
-
-            // var colorScale = function(nodeName) {
-            //     if (nodeName.includes('.js')) {
-            //         return 'blue'; // Blue color for .js files
-            //     } else if (nodeName.includes('.css')) {
-            //         return 'red'; // Red color for .css files
-            //     } else {
-            //         return 'black'; // Black color for other nodes
-            //     }
-            // };
+            };
            //新建一个力导向图，固定语句
            var forceSimulation = d3.forceSimulation()
-               .force("link",d3.forceLink()
-               .distance(100)
-               .strength(0.01)
-               )
+               .force("link",d3.forceLink())
                .force("charge",d3.forceManyBody())
                .force("center",d3.forceCenter());
 
@@ -129,7 +112,7 @@
                .append("line")
                .attr("stroke",function(d,i)
                {
-                   return "orange";  //这里决定了边的颜色
+                   return colorScale(i);  //这里决定了边的颜色
                })
                .attr("stroke-width",1);   //边的粗细
 
@@ -162,12 +145,10 @@
 
            //绘制节点
            gs.append("circle")
-               .attr("r",function(d){
-                return d.name == "HTML" ? 15: 10; // if name is HTML, size is bigger
-               })   //每个顶点的大小
+               .attr("r",10)   //每个顶点的大小
                .attr("fill",function(d,i)
                {
-                   return getNodeColor(d.name);  //颜色
+                   return d3.rgb(d.name);  //颜色
                })
 
            //顶点上的文字
@@ -185,12 +166,12 @@
                            .attr("id", "resolved")
                            .attr("markerUnits","userSpaceOnUse")
                            .attr("viewBox", "0 -5 10 10")//坐标系的区域
-                           .attr("refX",30)//箭头在线上的位置，数值越小越靠近顶点
+                           .attr("refX",26)//箭头在线上的位置，数值越小越靠近顶点
                            .attr("refY", 0)
-                           .attr("markerWidth", 20)//箭头的大小（长度）
+                           .attr("markerWidth", 6)//箭头的大小（长度）
                            .attr("markerHeight", 6)  //没用
                            .attr("orient", "auto")//绘制方向，可设定为：auto（自动确认方向）和 角度值
-                           .attr("stroke-width",20)//箭头宽度
+                           .attr("stroke-width",2)//箭头宽度
                            .append("path")
                            .attr("d", "M0,-5L10,0L0,5")//箭头的路径
                            .attr('fill','#000000');//箭头颜色
@@ -223,7 +204,7 @@
            {
                if(!d3.event.active)
                {
-                   forceSimulation.alphaTarget(0.1).restart();
+                   forceSimulation.alphaTarget(0.8).restart();
                }
                d.fx = d.x;
                d.fy = d.y;
@@ -237,13 +218,13 @@
 
            function ended(d)
            {
-            //    if(!d3.event.active)
-            //    {
-            //        forceSimulation.alphaTarget(0);
+               if(!d3.event.active)
+               {
+                   forceSimulation.alphaTarget(0);
                    
-            //    }
-            //    d.fx = null;
-            //    d.fy = null;
+               }
+               d.fx = null;
+               d.fy = null;
            }
 
        </script>
