@@ -1,5 +1,3 @@
-(function() {
-
 async function fetchScriptContent(url) {
     try {
         const response = await fetch(url);
@@ -43,17 +41,9 @@ async function fetchAndAnalyzeScripts(scriptUrls, depth = 0) {
     }
 }
 
-// Start the process for scripts in the current document
-console.log("begin to fetch the javascript");
-const initialScriptUrls = Array.from(document.querySelectorAll('script[src]')).map(script => script.src);
-console.log("this is the shit",{initialScriptUrls});
-chrome.runtime.sendMessage({
-    type: 'FETCHING_LINKS',
-    log: "HTML",
-    child: JSON.stringify(initialScriptUrls),
-    size: 100
-});
-fetchAndAnalyzeScripts(initialScriptUrls);
+
+
+// 
 
 
 
@@ -83,17 +73,5 @@ function collectSrcs() {
     });
 }
 
-chrome.runtime.sendMessage({
-    type: 'COLLECT_LINKS',
-    url: window.location.href,
-    links: collectSrcs()
-});
 
-})();
-// chrome.runtime.sendMessage({download: "request", url: document.documentElement.outerHTML});
-
-// document.querySelectorAll('img').forEach(img => {
-    
-//     chrome.downloads.download({url: img.src});
-//   });
-  
+module.exports = { fetchScriptContent, findScriptUrlsInContent, fetchAndAnalyzeScripts, collectLinks, collectSrcs};

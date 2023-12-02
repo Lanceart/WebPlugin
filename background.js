@@ -4,7 +4,7 @@
 //   // target: {tabId: tabs[0].id},
 //   files: ["./script/init_db"]
 // });
-console.log("I need create DB");
+
 const depens = {};
 class dependency {
   constructor(url,time,type) {
@@ -14,6 +14,8 @@ class dependency {
       this.size = 0;
       this.child = {};
       this.times = 1;
+      this.start = 0;
+      this.end = 0;
   }
   set_size(size){
     this.size = size;
@@ -53,6 +55,7 @@ const update_child = (urlitem, child) =>{
 class dependencyManager {
   constructor() {
       this.depends = new Map();
+      this.depends.set('HTML',new dependency('HTML', 1, 'html'))
   }
   updateOneparam(url, param,strategy){
     if (this.depends.has(url)) {
@@ -88,6 +91,7 @@ const manager = new dependencyManager();
 
 let currentTabId = null;
 let requestTimes = {};
+var button_recording = false;
 
 // Listen for tab activation changes to update the currentTabId
 chrome.tabs.onActivated.addListener(activeInfo => {
@@ -97,15 +101,16 @@ chrome.tabs.onActivated.addListener(activeInfo => {
 // Use the webRequest API to log requests from the current active tab
 chrome.webRequest.onBeforeRequest.addListener(
   function(details) {
-    if (currentTabId && details.tabId === currentTabId) {
+    
+    if (currentTabId && details.tabId === currentTabId && button_recording === true) {
       // console.log(details);
       // !!! important
       
-      console.log(`URL Requested from active tab (${currentTabId}): ${details.url}, Type: ${details.type}, Initiator: ${details.initiator}. full ${JSON.stringify(details)}`);
+      // console.log(`URL Requested from active tab (${currentTabId}): ${details.url}, Type: ${details.type}, Initiator: ${details.initiator}. full ${JSON.stringify(details)}`);
       // If you want to communicate with the popup, you can send a message:
       // chrome.runtime.sendMessage({tabId: currentTabId, url: details.url});
 
-      console.log("Request made to: " + details.url );
+      // console.log("Request made to: " + details.url );
       requestTimes[details.requestId] = Date.now();
     }
   },
@@ -114,18 +119,17 @@ chrome.webRequest.onBeforeRequest.addListener(
 );
 chrome.webRequest.onCompleted.addListener(
   function(details) {
-    if (currentTabId && details.tabId === currentTabId) {
+    if (currentTabId && details.tabId === currentTabId && button_recording === true) {
 
 
       const headers = details.responseHeaders;
-      console.log("get all the header", headers);
       
       const startTime = requestTimes[details.requestId];
       const endTime = Date.now();
       const duration = endTime - startTime;
 
-      console.log(`Request completed from: ${details.url}`);
-      console.log(`Request took: ${duration}ms`);
+      // console.log(`Request completed from: ${details.url}`);
+      // console.log(`Request took: ${duration}ms`);
 
       manager.createOrUpdate(details.url, duration, details.type, updateStrategy);
       
@@ -144,11 +148,15 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 // background.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if(message.type == 'change_button_state'){
+    button_recording = !button_recording;
+    console.log(button_recording === true ? 'button is on': 'button is off');
+  }
   if(message.type == 'FETCHING_LINKS'){
     manager.updateOneparam(message.log.url, message.size, update_size);
     manager.updateOneparam(message.log.url, JSON.stringify(message.child), update_child);
 
-    console.log("Fetched", message.log.url, "and the child :", message.child ,"Json", JSON.stringify(message.child));
+    // console.log("Fetched", message.log.url, "and the child :", message.child ,"Json", JSON.stringify(message.child));
   }
   if(message.type == 'finished_collection'){
     console.log(manager);

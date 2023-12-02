@@ -1,0 +1,37 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+.sidebar {
+    flex: auto;
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: #800080; /* 紫色背景 */
+    color: white;
+    
+
+}
+.content {
+    margin-left: 250px; /* 与侧栏宽度相同的左边距 */
+    padding: 20px;
+    position: relative; /* 相对定位 */
+    left: 0;
+    top: 0;
+}
+
+.white_sp {
+
+    margin: 6px 2px;
+    height: 1px; /* 横线的厚度 */
+    background-color: white; /* 横线的颜色 */
+    width: 100%; /* 横线的宽度 */
+}
+
+.selected {
+    background-color: white !important; /* 被选中项的背景色 */
+    color: black; /* 可选：改变被选中项的文字颜色 */
+    
+}

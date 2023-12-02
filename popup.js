@@ -14,9 +14,16 @@
 //     }
 //   }
 // );
-document.getElementById('download').addEventListener('click', () => {
-  console.log("run the download");
+var clicked = false;
+document.getElementById('recording').addEventListener('click', () => {
   
+  
+  chrome.runtime.sendMessage({
+    type: 'change_button_state'
+  });
+
+  
+
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     chrome.scripting.executeScript({
       target: {tabId: tabs[0].id},
