@@ -46,14 +46,24 @@ async function fetchAndAnalyzeScripts(scriptUrls, depth = 0) {
 // Start the process for scripts in the current document
 console.log("begin to fetch the javascript");
 const initialScriptUrls = Array.from(document.querySelectorAll('script[src]')).map(script => script.src);
-console.log("this is the shit",{initialScriptUrls});
+const initialCSSUrls = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(link => link.href);
+console.log('I Got all the css', initialCSSUrls);
+var html_urls = [];
+for (const url of initialScriptUrls) {
+    html_urls.push(url);
+}
+
+var url = 'HTML';
 chrome.runtime.sendMessage({
     type: 'FETCHING_LINKS',
-    log: "HTML",
-    child: JSON.stringify(initialScriptUrls),
+    log: { url},
+    child: html_urls,
     size: 100
 });
+
+
 fetchAndAnalyzeScripts(initialScriptUrls);
+// fetchAndAnalyzeScripts(initialScriptUrls);
 
 
 

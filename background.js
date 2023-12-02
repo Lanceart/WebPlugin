@@ -7,15 +7,15 @@
 
 const depens = {};
 class dependency {
-  constructor(url,time,type) {
+  constructor(url,time,type, start, end) {
       this.url = url;
       this.type = type;
       this.time = time;
       this.size = 0;
-      this.child = {};
+      this.child = JSON.stringify([]);
       this.times = 1;
-      this.start = 0;
-      this.end = 0;
+      this.start = start;
+      this.end = end;
   }
   set_size(size){
     this.size = size;
@@ -57,6 +57,15 @@ class dependencyManager {
       this.depends = new Map();
       this.depends.set('HTML',new dependency('HTML', 1, 'html'))
   }
+  get_put(){
+
+    const arrayFromMap = Array.from(this.depends, ([key, value]) => ({ key, value }));
+    console.log('array to map', arrayFromMap);
+    chrome.storage.local.set({ 'outputs': arrayFromMap }, () => {
+      console.log('Final Links stored in chrome.storage.local');
+    });
+  }
+
   updateOneparam(url, param,strategy){
     if (this.depends.has(url)) {
       // this.depends.get(url).set_size(param);
@@ -68,7 +77,7 @@ class dependencyManager {
   }
     
   }
-  createOrUpdate(url, time, type, strategy) {
+  createOrUpdate(url, time, type, begin, end, strategy) {
       if (this.depends.has(url)) {
           // 应用提供的策略
           // strategy(this.depends.get(url), time);
@@ -77,7 +86,7 @@ class dependencyManager {
           
       } else {
           // 如果实例不存在，则创建一个新实例
-          this.depends.set(url, new dependency(url, time, type));
+          this.depends.set(url, new dependency(url, time, type, begin, end));
       }
   }
 
@@ -106,12 +115,13 @@ chrome.webRequest.onBeforeRequest.addListener(
       // console.log(details);
       // !!! important
       
-      // console.log(`URL Requested from active tab (${currentTabId}): ${details.url}, Type: ${details.type}, Initiator: ${details.initiator}. full ${JSON.stringify(details)}`);
+      console.log(`URL Requested url: ${details.url}, Type: ${details.type}}`);
       // If you want to communicate with the popup, you can send a message:
       // chrome.runtime.sendMessage({tabId: currentTabId, url: details.url});
 
       // console.log("Request made to: " + details.url );
       requestTimes[details.requestId] = Date.now();
+      
     }
   },
   { urls: ["<all_urls>"] },
@@ -119,8 +129,9 @@ chrome.webRequest.onBeforeRequest.addListener(
 );
 chrome.webRequest.onCompleted.addListener(
   function(details) {
-    if (currentTabId && details.tabId === currentTabId && button_recording === true) {
 
+    if (currentTabId && details.tabId === currentTabId && button_recording === true) {
+      
 
       const headers = details.responseHeaders;
       
@@ -131,7 +142,7 @@ chrome.webRequest.onCompleted.addListener(
       // console.log(`Request completed from: ${details.url}`);
       // console.log(`Request took: ${duration}ms`);
 
-      manager.createOrUpdate(details.url, duration, details.type, updateStrategy);
+      manager.createOrUpdate(details.url, duration, details.type, startTime, endTime, updateStrategy);
       
       delete requestTimes[details.requestId];
     }
@@ -156,10 +167,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     manager.updateOneparam(message.log.url, message.size, update_size);
     manager.updateOneparam(message.log.url, JSON.stringify(message.child), update_child);
 
-    // console.log("Fetched", message.log.url, "and the child :", message.child ,"Json", JSON.stringify(message.child));
+    console.log("Fetched", message.log.url, "and the child :", message.child ,"Json", JSON.stringify(message.child));
   }
   if(message.type == 'finished_collection'){
-    console.log(manager);
+    manager.get_put();
+    
+
   }
   if(message.type == 'COLLECT_LINKS'){
     chrome.storage.local.set({ 'collections': message.links }, () => {

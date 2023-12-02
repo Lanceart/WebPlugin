@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://d3js.org/d3.v7.min.js;">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"> -->
+
+    <!-- <meta http-equiv="Content-Security-Policy" content="script-src 'self' ./script/duration_data.js;"> -->
+
+    <title>根据时间段长度变化颜色的图表</title>
+    <!-- <script src="https://d3js.org/d3.v7.min.js"></script> -->
+    <style>
+        .chart text {
+            fill: black;
+            font: 10px sans-serif;
+            text-anchor: middle;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="./style/homepage.css">
+</head>
+
+<body>
+    <div>
+        <div class="sidebar">
+            <h2>侧栏标题</h2>
+            <br><br><br>
+            <ul>
+                <div class="white_sp"></div>
+                <li onclick="updateContent('content1')">Request Table</li>
+                <div class="white_sp"></div>
+                <li onclick="updateContent('content2')">Dependency Tree</li>
+                <div class="white_sp"></div>
+                <li onclick="updateContent('content3')">Duration analysis</li>
+                <div class="white_sp"></div>
+            </ul>
+        </div>
+        <div class="content" id="mainContent">
+            <div id="chartContainer" style="width: 100%; overflow-x: scroll;">
+                <svg height="700" class="chart"></svg>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+    <script src="external/d3.v7.min.js">
+    </script>
+
+    <script src="script/duration_data.js">
+    </script>
+
+</body>
+
+</html>
