@@ -22,8 +22,6 @@ document.getElementById('recording').addEventListener('click', () => {
     type: 'change_button_state'
   });
 
-  
-
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     chrome.scripting.executeScript({
       target: {tabId: tabs[0].id},
@@ -41,6 +39,14 @@ document.getElementById('saveconsole').addEventListener('click', () => {
       files: ['./script/saveconsole.js']
     });
   });
+});
+
+document.getElementById('duration').addEventListener('click', () => {
+  chrome.tabs.create({'url': chrome.runtime.getURL('duration.html')});
+});
+
+document.getElementById('graph').addEventListener('click', () => {
+  chrome.tabs.create({'url': chrome.runtime.getURL('extension-page_bk.html')});
 });
 
 document.addEventListener('DOMContentLoaded', function() {
