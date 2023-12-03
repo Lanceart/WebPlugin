@@ -48,17 +48,17 @@ chrome.storage.local.get('outputs').then(items => {
     console.log('mother fucjer', data);
 
 
-    data = [
-        { start: 0, end: 60, name: "任务 A" },     // 持续时间 60 秒
-    { start: 170, end: 180, name: "任务 B1" },
-        { start: 70, end: 130, name: "任务 B" },  // 持续时间 60 秒
-        { start: 100, end: 200, name: "任务 C" }, // 持续时间 100 秒
-        { start: 150, end: 300, name: "任务 D" }, // 持续时间 150 秒
-        { start: 300, end: 600, name: "任务 E" }, // 持续时间 300 秒
-    { start: 300, end: 1600, name: "任务 F" },
-     { start: 1000, end: 1600, name: "任务 G" }, { start: 1300, end: 2100, name: "任务 H" },
-        // 可以根据需要添加更多数据
-    ];
+    // data = [
+    //     { start: 0, end: 60, name: "任务 A" },     // 持续时间 60 秒
+    // { start: 170, end: 180, name: "任务 B1" },
+    //     { start: 70, end: 130, name: "任务 B" },  // 持续时间 60 秒
+    //     { start: 100, end: 200, name: "任务 C" }, // 持续时间 100 秒
+    //     { start: 150, end: 300, name: "任务 D" }, // 持续时间 150 秒
+    //     { start: 300, end: 600, name: "任务 E" }, // 持续时间 300 秒
+    // { start: 300, end: 1600, name: "任务 F" },
+    //  { start: 1000, end: 1600, name: "任务 G" }, { start: 1300, end: 2100, name: "任务 H" },
+    //     // 可以根据需要添加更多数据
+    // ];
 
     var height = 500;
 
