@@ -2,44 +2,73 @@ var node_data =[];
 var edge_data = [];
 var data = [];
 var index_array = {};
-chrome.storage.local.get('outputs').then(items => {
-    raw_data = items.outputs;
-    node_data = items.outputs;
 
+chrome.storage.local.get('collections').then(items_o => {
+chrome.storage.local.get('outputs').then(items => {
     
-    node_data = raw_data.map(item => {
-        return {
-            name: item.value.url
+    raw_data = items.outputs;
+    
+
+    const seenNames = new Set();
+    const temp_node_data = items_o.collections.reduce((accumulator, item) => {
+        const parts = item.split(' ');
+        const name = parts[1]; // 或者如果您想用整个 item 作为名称，则使用 item
+    
+        if (!seenNames.has(name)) {
+            seenNames.add(name);
+            accumulator.push({ name });
+        }
+    
+        return accumulator;
+    }, []);
+    
+    node_data = temp_node_data.map(item =>{
+        return{
+            name: item.name
         };
     });
+    node_data.push({name : "HTML"});
+
+
+    
+    // node_data = items.outputs;
+
+    
+    // node_data = raw_data.map(item => {
+    //     return {
+    //         name: item.value.url
+    //     };
+    // });
 
     node_data.forEach((nod, index) => {
+        console.log('print node',nod.name.name);
         index_array[nod.name] = index; // 或者使用任何你希望映射的数字
     });
 
-    
-    edge_data = raw_data.map(item => {
+    console.log('index_array', index_array);
+    console.log('index_array', index_array["https://blogs.cyanli.com/_next/static/chunks/webpack-f49177de656c49c9.js"]);
+    edge_data = items.outputs.map(item => {
         var temp_child = JSON.parse(item.value.child);
         var local_url_index = index_array[item.value.url];
         
         if(temp_child.length !== 0 ){
-
-        return temp_child.map(ps => {
-            console.log('lcoal_url_idnex', local_url_index);
-            console.log('ohhhhhhhh',index_array[ps]);
-                return {
-                    source: local_url_index,
-                    target: index_array[ps]
-                }; 
-            });
+            
+                return temp_child.map(ps => {
+                    console.log('lcoal_url_idnex', local_url_index);
+                    console.log('ohhhhhhhh',index_array[ps]);
+                        return {
+                            source: local_url_index,
+                            target: index_array[ps]
+                        }; 
+                    });
+            
         }else{
             return [];
         }
     }).flat();
 
     // 现在 data 已经准备好了，可以在这里处理或打印 data
-    console.log('index_array', index_array);
-    console.log('index_array', index_array["https://blogs.cyanli.com/_next/static/chunks/webpack-f49177de656c49c9.js"]);
+
     console.log('edge_data', edge_data);
 
 
@@ -89,8 +118,13 @@ var colorScale = d3.scaleOrdinal()
          return 'blue'; // Blue color for .js files
      } else if (nodeName.includes('.css')) {
          return 'red'; // Red color for .css files
-
-     }else if (nodeName.includes('HTML')) {
+     
+     }else if (nodeName.includes('.jpg' )) {
+        return '#00FFFF'; // Red color for .css files
+    }else if (nodeName.includes('.png' )) {
+        return '#00FFFF'; // Red color for .css files
+    }
+     else if (nodeName.includes('HTML')) {
          return 'green'; // Red color for .css files
      } else {
          return 'black'; // Black color for other nodes
@@ -256,4 +290,5 @@ function ended(d)
 }
 
 
+});
 });

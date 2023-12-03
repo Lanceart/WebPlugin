@@ -46,10 +46,69 @@ async function fetchAndAnalyzeScripts(scriptUrls, depth = 0) {
 // Start the process for scripts in the current document
 console.log("begin to fetch the javascript");
 const initialScriptUrls = Array.from(document.querySelectorAll('script[src]')).map(script => script.src);
+
+
+
+// ///////begin CSS 
+
+async function fetchCSSContent(url) {
+    try {
+        const response = await fetch(url);
+        return response.ok ? await response.text() : null;
+    } catch (error) {
+        console.error(`Error fetching ${url}:`, error);
+        return null;
+    }
+}
+
+function findCSSImportsInContent(content) {
+    const cssImportRegex = /@import\s+["'](.+?)["']/g;
+    let match;
+    const urls = [];
+
+    while ((match = cssImportRegex.exec(content)) !== null) {
+        urls.push(match[1]);
+    }
+
+    return urls;
+}
+
+async function fetchAndAnalyzeCSS(cssUrls, depth = 0) {
+    if (depth > 5) { // 限制递归深度以避免过度递归
+        return;
+    }
+
+    for (const url of cssUrls) {
+        const content = await fetchCSSContent(url);
+        if (content) {
+            const childCSSUrls = findCSSImportsInContent(content);
+            chrome.runtime.sendMessage({
+                type: 'FETCHING_LINKS',
+                log: {url},
+                child: childCSSUrls,
+                size: new TextEncoder().encode(content).length
+            });
+            console.log(`Found @import URLs in ${url}:`, childCSSUrls);
+            await fetchAndAnalyzeCSS(childCSSUrls, depth + 1);
+        }
+    }
+}
+
 const initialCSSUrls = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(link => link.href);
-console.log('I Got all the css', initialCSSUrls);
+
+
+const initialImageUrls = Array.from(document.querySelectorAll('img')).map(img => img.src);
+console.log('I Got all the css', initialImageUrls);
+// // img begin
+
 var html_urls = [];
 for (const url of initialScriptUrls) {
+    html_urls.push(url);
+}
+for (const url of initialCSSUrls) {
+    html_urls.push(url);
+}
+for (const url of initialImageUrls) {
     html_urls.push(url);
 }
 
@@ -63,7 +122,7 @@ chrome.runtime.sendMessage({
 
 
 fetchAndAnalyzeScripts(initialScriptUrls);
-// fetchAndAnalyzeScripts(initialScriptUrls);
+fetchAndAnalyzeCSS(initialCSSUrls);
 
 
 
