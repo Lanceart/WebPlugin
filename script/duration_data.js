@@ -1,14 +1,14 @@
-// var data = [
-//     { start: 0, end: 60, name: "任务 A" },     // 持续时间 60 秒
-// { start: 170, end: 180, name: "任务 B1" },
-//     { start: 70, end: 130, name: "任务 B" },  // 持续时间 60 秒
-//     { start: 100, end: 200, name: "任务 C" }, // 持续时间 100 秒
-//     { start: 150, end: 300, name: "任务 D" }, // 持续时间 150 秒
-//     { start: 300, end: 600, name: "任务 E" }, // 持续时间 300 秒
-// { start: 300, end: 1600, name: "任务 F" },
-//  { start: 1000, end: 1600, name: "任务 G" }, { start: 1300, end: 2100, name: "任务 H" },
-//     // 可以根据需要添加更多数据
-// ];
+var data = [
+    { start: 0, end: 60, name: "任务 A" },     // 持续时间 60 秒
+{ start: 170, end: 180, name: "任务 B1" },
+    { start: 70, end: 130, name: "任务 B" },  // 持续时间 60 秒
+    { start: 100, end: 200, name: "任务 C" }, // 持续时间 100 秒
+    { start: 150, end: 300, name: "任务 D" }, // 持续时间 150 秒
+    { start: 300, end: 600, name: "任务 E" }, // 持续时间 300 秒
+{ start: 300, end: 1600, name: "任务 F" },
+ { start: 1000, end: 1600, name: "任务 G" }, { start: 1300, end: 2100, name: "任务 H" },
+    // 可以根据需要添加更多数据
+];
 var raw_data =[];
 var data = [];
 
@@ -79,7 +79,7 @@ chrome.storage.local.get('outputs').then(items => {
     // 创建 SVG 容器
 
     var totalWidth = d3.max(data, d => d.end); // 或者一个更大的值
-    var svg = d3.select("svg").attr("width", totalWidth);
+    var svg = d3.select("svg").attr("width",  Math.max(totalWidth, 5000));
     var x = d3.scaleLinear()
     .domain([0, d3.max(data, d => d.end)])
     .range([0, totalWidth]);
@@ -106,9 +106,12 @@ chrome.storage.local.get('outputs').then(items => {
         .attr("dy", ".35em")
         .text(d => d.name);
 
+
     var xAxis = d3.axisBottom(x)
-        .ticks(totalWidth/10) // 设置刻度数量
+        .ticks(totalWidth/100) // 设置刻度数量
         .tickFormat(d3.format("d")); // 设置刻度格式
+
+
 
     svg.append("g")
         .attr("transform", "translate(0," + height + ")")
@@ -118,7 +121,8 @@ chrome.storage.local.get('outputs').then(items => {
 
     // 添加 Y 轴
     svg.append("g")
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y)
+        .tickFormat(""));
 });
 
 
