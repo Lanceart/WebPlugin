@@ -1,9 +1,50 @@
- 
-var marge = {top:100,bottom:100,left:100,right:100}
-var svg = d3.select("#demo1")    //获取画布
-var width = svg.attr("width")  //画布的宽
-var height = svg.attr("height")   //画布的高
-var g = svg.append("g").attr("transform","translate("+marge.top+","+marge.left+")");
+var node_data =[];
+var edge_data = [];
+var data = [];
+var index_array = {};
+chrome.storage.local.get('outputs').then(items => {
+    raw_data = items.outputs;
+    node_data = items.outputs;
+
+    
+    node_data = raw_data.map(item => {
+        return {
+            name: item.value.url
+        };
+    });
+
+    node_data.forEach((nod, index) => {
+        index_array[nod.name] = index; // 或者使用任何你希望映射的数字
+    });
+
+    
+    edge_data = raw_data.map(item => {
+        var temp_child = JSON.parse(item.value.child);
+        var local_url_index = index_array[item.value.url];
+        
+        if(temp_child.length !== 0 ){
+
+        return temp_child.map(ps => {
+            console.log('lcoal_url_idnex', local_url_index);
+            console.log('ohhhhhhhh',index_array[ps]);
+                return {
+                    source: local_url_index,
+                    target: index_array[ps]
+                }; 
+            });
+        }else{
+            return [];
+        }
+    }).flat();
+
+    // 现在 data 已经准备好了，可以在这里处理或打印 data
+    console.log('index_array', index_array);
+    console.log('index_array', index_array["https://blogs.cyanli.com/_next/static/chunks/webpack-f49177de656c49c9.js"]);
+    console.log('edge_data', edge_data);
+
+
+
+
 
 //结点数据
 var nodes=[ {name:"HTML"},
@@ -12,22 +53,30 @@ var nodes=[ {name:"HTML"},
               {name:"popup.css"},
               {name:"script.js"},
              {name:"style.css"},
-             {name:"extension.css"}
+             {name:"extension.css"},
+             {name:"single"}
 ];
 //边数据，id是nodes数组中的元素下标
 var edges=[ {source:0,target:1},
             {source:0,target:2},
             {source:0,target:3},
             {source:0,target:4},
-            {source:0,target:5},
             {source:1,target:0},
             {source:1,target:2},
             {source:1,target:3},
             {source:1,target:4},
-            {source:1,target:5},
             {source:2,target:0},
-            {source:2, target:6}
 ];
+
+nodes = node_data;
+edges = edge_data;
+var marge = {top:100,bottom:100,left:100,right:100}
+var svg = d3.select("#demo1")    //获取画布
+var width = svg.attr("width")  //画布的宽
+var height = svg.attr("height")   //画布的高
+var g = svg.append("g").attr("transform","translate("+marge.top+","+marge.left+")");
+
+
 
 //设置一个color的颜色比例尺，为了让不同的顶点呈现不同的颜色
 var colorScale = d3.scaleOrdinal()
@@ -63,9 +112,8 @@ var forceSimulation = d3.forceSimulation()
     .distance(100)
     .strength(0.01)
     )
-    .force("charge",d3.forceManyBody())
+    .force("charge",d3.forceManyBody().strength(-20))
     .force("center",d3.forceCenter());
-
 //初始化力导向图，也就是传入数据
 //生成节点数据
 forceSimulation.nodes(nodes).on("tick",ticked);//on()方法用于绑定时间监听器，tick事件是力导向布局每隔一段时间就会做的事
@@ -206,3 +254,6 @@ function ended(d)
  //    d.fx = null;
  //    d.fy = null;
 }
+
+
+});
