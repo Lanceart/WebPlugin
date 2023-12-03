@@ -41,13 +41,7 @@ document.getElementById('saveconsole').addEventListener('click', () => {
   });
 });
 
-document.getElementById('duration').addEventListener('click', () => {
-  chrome.tabs.create({'url': chrome.runtime.getURL('duration.html')});
-});
 
-document.getElementById('graph').addEventListener('click', () => {
-  chrome.tabs.create({'url': chrome.runtime.getURL('extension-page_bk.html')});
-});
 
 document.addEventListener('DOMContentLoaded', function() {
   var button = document.getElementById('myButton');
@@ -56,6 +50,21 @@ document.addEventListener('DOMContentLoaded', function() {
           chrome.tabs.create({'url': chrome.runtime.getURL('extension-page.html')});
       });
   }
+
+  var button2 = document.getElementById('duration');
+  if (button2) {
+    button2.addEventListener('click', function() {
+        chrome.tabs.create({'url': chrome.runtime.getURL('durationpage.html')});
+    });
+  }
+  
+  var button3 = document.getElementById('graph');
+  if (button3) {
+    button3.addEventListener('click', function() {
+        chrome.tabs.create({'url': chrome.runtime.getURL('extension-page_bk.html')});
+    });
+  }
+
 });
 
 
