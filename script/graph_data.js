@@ -45,16 +45,24 @@ chrome.storage.local.get('outputs').then(items => {
         index_array[nod.name] = index; // 或者使用任何你希望映射的数字
     });
 
+   
     console.log('index_array', index_array);
-    console.log('index_array', index_array["https://blogs.cyanli.com/_next/static/chunks/webpack-f49177de656c49c9.js"]);
     edge_data = items.outputs.map(item => {
         var temp_child = JSON.parse(item.value.child);
+        
+        if( !(item.value.url in index_array)){return [];}
+        console.log('index_array[item.value.url]', index_array[item.value.url]);
         var local_url_index = index_array[item.value.url];
         
         if(temp_child.length !== 0 ){
             
                 return temp_child.map(ps => {
                     console.log('lcoal_url_idnex', local_url_index);
+                    
+                    if( !(ps in index_array))return {
+                        source: local_url_index,
+                        target: 0
+                    };
                     console.log('ohhhhhhhh',index_array[ps]);
                         return {
                             source: local_url_index,
