@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var button = document.getElementById('myButton');
   if (button) {
       button.addEventListener('click', function() {
-          chrome.tabs.create({'url': chrome.runtime.getURL('extension-page.html')});
+          chrome.tabs.create({'url': chrome.runtime.getURL('home.html')});
       });
   }
 
