@@ -188,7 +188,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         reader.onload = function() {
             var url = reader.result;
 
-            // 使用chrome.downloads.download下载文本
+            // chrome.downloads.download
             chrome.downloads.download({
                 url: url
               });
