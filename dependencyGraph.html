@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dependency Graph</title>
+    <link rel="stylesheet" type="text/css" href="./style/homepage.css">
+    <!-- <script type="text/javascript" src="http://d3js.org/d3.v5.min.js"></script> -->
+    <meta name="description" content="this is my page">
+    <meta name="content-type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <style>
+        .node { margin-left: 20px; }
+    
+        
+        /* 添加 CSS 样式以在表格中显示分割线 */
+        table {
+            border-collapse: collapse; /* 确保边框没有间隔 */
+            width: 100%; /* 表格宽度 */
+        }
+        th, td {
+            border: 1px solid black; /* 单元格边框 */
+            padding: 8px; /* 单元格内边距 */
+            text-align: left; /* 文本对齐方式 */
+        }
+    
+    </style>
+    <script src="extension-page.js"></script>
+</head>
+<body>
+    <h1>Dependency Graph</h1>
+    <div class="sidebar">
+        <h2>&nbsp;Dependency Graph</h2>
+        <br><br><br>
+        <ul>
+            <div class="white_sp"></div>
+            <li onclick="updateContent('content1')">Request Table</li>
+            <div class="white_sp"></div>
+            <li onclick="updateContent('content2')">Dependency Tree</li>
+            <div class="white_sp"></div>
+            <li onclick="updateContent('content3')">Duration analysis</li>
+            <div class="white_sp"></div>
+        </ul>
+    </div>
+    <!-- <div id="linksContainer">Loading links...</div> -->
+    <svg id="demo1" width=1920 height=1200>
+      
+    </svg>
+    <!-- <div id="d3-container-div"></div> -->
+    <!-- <div id="table-container"></div> -->
+
+    <script src="external/d3.v5.min.js">
+    </script>
+    <script src="script/graph_data.js">
+    
+    </script>
+    <script src="tree_builder.js"></script>
+    <script src="script/format.js"></script>
+</body>
+</html>
