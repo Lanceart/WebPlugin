@@ -7,3 +7,5 @@ background.js
 Co-operator:
 Linqing Li
 Chuanye xiong
+
+![image] (images/arch.jpg)
